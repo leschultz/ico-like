@@ -6,11 +6,13 @@ PYTHON="python3"           # Python version installed (3 or above)
 # Files
 SCRIPTS_DIR="../scripts/"  # The directory for scripts
 DATA="../../jianqi_data/"  # The original data directory
-TRAJ_NAME="XDATCAR"        # The name of the type of file containing trajectories
 DEST="../data/"            # Directory were data is copied to
 
+# The name of files containing trajectories
+declare -a arr=("XDATCAR.300" "XDATCAR.800" "XDATCAR.1300")
+
 # Copy trajectory data from VASP runs
-${PYTHON} ${SCRIPTS_DIR}copydata.py\
-	"-s${DATA}"\
-	"-n${TRAJ_NAME}"\
-	"-d${DEST}"\
+for i in "${arr[@]}"
+do
+	${PYTHON} ${SCRIPTS_DIR}copydata.py "-s${DATA}" "-n${i}" "-d${DEST}"
+done
