@@ -5,9 +5,9 @@ PYTHON="python3"           # Python version installed (3 or above)
 
 # Files
 SCRIPTS_DIR="../scripts/"  # The directory for scripts
-DATA="../../jianqi_data/"
-TRAJ_NAME="XDATCAR"
-DEST="../data/"
+DATA="../../jianqi_data/"  # The original data directory
+TRAJ_NAME="XDATCAR"        # The name of the type of file containing trajectories
+DEST="../data/"            # Directory were data is copied to
 
 # Copy trajectory data from VASP runs
 ${PYTHON} ${SCRIPTS_DIR}copydata.py\
