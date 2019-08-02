@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Programs
+PYTHON="python3"           # Python version installed (3 or above)
+
+# Files
+SCRIPTS_DIR="../scripts/"  # The directory for scripts
+DATA="../../jianqi_data/"
+TRAJ_NAME="XDATCAR"
+DEST="../data/"
+
+# Copy trajectory data from VASP runs
+${PYTHON} ${SCRIPTS_DIR}copydata.py\
+	"-s${DATA}"\
+	"-n${TRAJ_NAME}"\
+	"-d${DEST}"\
