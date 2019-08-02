@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# Programs
+PYTHON="python3"           # Python version installed (3 or above)
+MPI="mpirun"               # MPI
+LAMMPS="lmp_mpi"           # LAMMPS program
+THREADS=4                  # The number of threads
+
+# Files
+SCRIPTS_DIR="../scripts/"                   # The directory for scripts
+TEMPLATE="../file_templates/visc.in"        # The template file for runs
+POT_FILE="../potentials/ZrCuAl.lammps.eam"  # The potential
+IN_NAME="visc.in"                           # The template name of the input file
+
+# Runs
+RUN_DIR="../test/"                                    # The directory to store runs
+RUN_N=1                                               # The number of runs
+STYLE="eam/alloy"                                     # Potential style
+ELEMENTS="Zr Cu Al"                                   # The elements
+TYPES="[(1, 116), (117, 244), (245, 256)]"            # Types of atoms and their range by ELEMENTS order
+SIDES=4                                               # Simulation cube side length
+LATTICE="fcc"                                         # Lattice type
+LATTICE_PARAM=4.04092655671750                        # Lattice parameter
+TIMESTEP=0.001                                        # Timestep
+DUMP=100                                              # Data saving interval
+EQHOLD=100000                                         # Equilibration hold
+HOLD=200000                                           # Run hold
+TEMPERATURE=2000                                      # The temperature
+CORLENGTH=500                                         # The correlation length
+SAMPLEINTERVAL=10                                     # The correlation sample interval
+
+# Generate runs
+${PYTHON} ${SCRIPTS_DIR}run_creator.py\
+	"${RUN_DIR}"\
+	"${RUN_N}"\
+        "${TEMPLATE}"\
+	"${ELEMENTS}"\
+        "${POT_FILE}"\
+	"${STYLE}"\
+	"${TYPES}"\
+	"${SIDES}"\
+	"${LATTICE}"\
+	"${LATTICE_PARAM}"\
+	"${TIMESTEP}"\
+	"${DUMP}"\
+	"${EQHOLD}"\
+	"${HOLD}"\
+	"${TEMPERATURE}"\
+	"${CORLENGTH}"\
+	"${SAMPLEINTERVAL}"\
+
+# Run all created jobs
+${PYTHON} ${SCRIPTS_DIR}run_lammps.py\
+        "${RUN_DIR}"\
+        "${MPI} -n ${THREADS} ${LAMMPS}"\
+        "${IN_NAME}"\
+
+# Plot thermodynamic data as a function of simulation time
+${PYTHON} ${SCRIPTS_DIR}thermo_plotter.py\
+        "${RUN_DIR}"\
+        "${IN_NAME}"\
+
+# Average the viscosities for runs
+${PYTHON} ${SCRIPTS_DIR}mean_viscosity_gk.py\
+	"${RUN_DIR}"\
+        "${IN_NAME}"\
