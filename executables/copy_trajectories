@@ -4,9 +4,9 @@
 PYTHON="python3"           # Python version installed (3 or above)
 
 # Files
-SCRIPTS_DIR="../scripts/"  # The directory for scripts
-DATA="../../jianqi_data/"  # The original data directory
-DEST="../data/"            # Directory were data is copied to
+SCRIPTS_DIR="../scripts/"        # The directory for scripts
+DATA="../../jianqi_data_clean/"  # The original data directory
+DEST="../data/"                  # Directory were data is copied to
 
 # The name of files containing trajectories
 declare -a arr=("XDATCAR.300" "XDATCAR.800" "XDATCAR.1300")
