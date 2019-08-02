@@ -1,7 +1,7 @@
-from ast import literal_eval
-
 import pandas as pd
 import argparse
+
+import os
 
 parser = argparse.ArgumentParser(
                                  description='Arguments for ICO analysis'
@@ -21,27 +21,16 @@ parser.add_argument(
                     help='parent directory name'
                     )
 
-parser.add_argument(
-                    '-d',
-                    action='store',
-                    type=str,
-                    help='list of temperatures of interest'
-                    )
-
 args = parser.parse_args()
-args.d = literal_eval(args.d)
 
 df = pd.read_csv(args.s)
 
-# Filter the data by temperatures and composition
-df['run'] = df['run'].apply(lambda x: x.split(args.p)[-1].split('/')[1:])
-df['run'] = df['run'].apply(lambda x: [x[0], x[-1]])  # First and last
-df[['system', 'temp']] = pd.DataFrame(df['run'].values.tolist(), index= df.index)
-df['temp'] = df['temp'].astype(int)
-df = df.loc[:, df.columns != 'run']
-df = df[df['temp'].isin(args.d)]
+temp = int(args.s.split('.')[-2].split('_')[0])
 
-groups = df.groupby(['temp', 'system'])
+# Filter the data by temperatures and composition
+df['run'] = df['run'].apply(lambda x: x.split(args.p)[-1].split('/')[1])
+
+groups = df.groupby(['run'])
 
 mean = groups.mean().add_suffix('_mean').reset_index()
 std = groups.std().add_suffix('_std').reset_index()
@@ -51,5 +40,11 @@ count = groups.count().add_suffix('_count').reset_index()
 df = mean.merge(std)
 df = df.merge(sem)
 df = df.merge(count)
+df['temp'] = temp
 
-#df.to_csv(os.path.join(export_dir, 'tg_mean_df.txt'), index=False)
+df.to_csv(
+          args.s.split('.txt')[0]+'_grouped.txt',
+          index=False
+          )
+
+print(df)

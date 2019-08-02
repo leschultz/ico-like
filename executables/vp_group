@@ -5,12 +5,14 @@ PYTHON="python3"              # Python version installed (3 or above)
 
 # Files
 SCRIPTS_DIR="../scripts/"     # The directory for scripts
-SAVE="../data/fractions.txt"  # File contaiining Voronoi polyhedra data
 PARENT="jianqi_data"          # The parent directory name
-DICT="[300, 800, 1300]"       # List of temperatures to examine
+DATADIR="../data/"            # Directory containing data
 
-# Copy trajectory data from VASP runs
-${PYTHON} ${SCRIPTS_DIR}vp_group.py\
-	"-s${SAVE}"\
-	"-p${PARENT}"\
-	"-d${DICT}"\
+# File contaiining Voronoi polyhedra data
+declare -a arr=("XDATCAR.300_fractions.txt" "XDATCAR.800_fractions.txt" "XDATCAR.1300_fractions.txt")\
+
+# Find population statistics
+for i in "${arr[@]}"
+do
+	${PYTHON} ${SCRIPTS_DIR}vp_group.py "-s${DATADIR}${i}" "-p${PARENT}"
+done
