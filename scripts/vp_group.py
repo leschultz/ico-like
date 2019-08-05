@@ -21,6 +21,13 @@ parser.add_argument(
                     help='parent directory name'
                     )
 
+parser.add_argument(
+                    '-e',
+                    action='store',
+                    type=str,
+                    help='name of output file extension'
+                    )
+
 args = parser.parse_args()
 
 df = pd.read_csv(args.s)
@@ -43,7 +50,7 @@ df = df.merge(count)
 df['temp'] = temp
 
 df.to_csv(
-          args.s.split('.txt')[0]+'_grouped.txt',
+          args.s.split('.txt')[0]+args.e,
           index=False
           )
 
